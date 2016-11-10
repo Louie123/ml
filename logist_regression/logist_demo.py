@@ -8,7 +8,7 @@ Date: Last update 2015-9-15
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-import sys
+import sys, getopt
 
 def load_X_file(filename):
     data = np.loadtxt(filename, dtype='float64')
@@ -92,7 +92,6 @@ def min_SGD(X, Y, thetas, rate = 0.1, max_iter = 20, scale = 10, end_condition=1
         sum_new = -mle(X, Y, thetas)
         print("iteration%d:The hypothesis is y=%f + %f*x1 + %f*x2  Cost:%f" % (iteration, thetas[0], thetas[1], thetas[2], sum_new))
 
-
 def Netown(X, Y, thetas, end_condition=1e-4):
     X = z_score_normalization(X)
     sum_old, sum_new = 0, -mle(X, Y, thetas)
@@ -132,32 +131,32 @@ def show_plot(sum_J, X, Y, thetas, iteration):
     fig.canvas.draw()
     fig.show()
 
-if __name__ == '__main__':
+def usage():
+    print '''
+    logist_demo.py [Options]
+        -h, --help, show the usage
+        -m, --method [netown|gd|sgd|min_sgd], optimization method
+         e.g. python logist_demo.py -m gd
+        '''
+def start_demo():
     fig, axarr = plt.subplots(1, 2, figsize=(14,5))
     X, Y = load_X_file('data\X.dat'), load_Y_file('data\Y.dat')
+    options, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "method="])
     thetas = [0, 0, 0]
-    args = sys.argv[1:]
-    if args[0]=="-h":
-        print '''
-               -h    -> help
-               -f ['netown', 'gd', 'sgd', 'min_sgd']
-                     -> optimization method
-                e.g. python logist_demo.py -f gd
-        '''
-    elif args[0]=='-f':
-        if args[1] == 'netown':
-            Netown(X, Y, thetas)
-        elif args[1]=='gd':
-            GD(X, Y, thetas, 0.22)
-        elif args[1]=='sgd':
-            SGD(X, Y, thetas, 0.1, 20)
-        elif args[1]=='min_sgd':
-            min_SGD(X, Y, thetas, 0.1)
-        else:
-            print '''
-                    -h    -> help
-                    -f -> optimization method
-                          ['netown', 'gd', 'sgd', 'min_sgd']
-                    e.g. python logist_demo.py -f gd
-                  ''' 
+    for name,value in options:
+        if name in ("-h","--help"):
+            usage()
+            return
+        if name in ("-m","--method"):
+            if value == 'netown':
+                Netown(X, Y, thetas)
+            elif value =='gd':
+                GD(X, Y, thetas, 0.22)
+            elif value=='sgd':
+                SGD(X, Y, thetas, 0.1, 20)
+            elif value=='min_sgd':
+                min_SGD(X, Y, thetas, 0.1)
     raw_input()
+
+if __name__ == '__main__':
+    start_demo()
