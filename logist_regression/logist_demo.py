@@ -9,7 +9,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, getopt
-
+fig, axarr = plt.subplots(1, 2, figsize=(14,5))
 def load_X_file(filename):
     data = np.loadtxt(filename, dtype='float64')
     ones = np.ones(data.shape[0])
@@ -108,6 +108,7 @@ def Netown(X, Y, thetas, end_condition=1e-4):
         print("iteration%d:The hypothesis is y=%f + %f*x1 + %f*x2  Cost:%f" % (iteration, thetas[0], thetas[1], thetas[2], sum_new))
         
 def show_plot(sum_J, X, Y, thetas, iteration):
+    global fig, axarr
     exam2 = (-X[:,:-1].dot(thetas[:-1])/ (thetas[-1] + 1e-10)).tolist()
     X_0, X_1 = [], []
     for i in range(len(X)):
@@ -139,9 +140,9 @@ def usage():
          e.g. python logist_demo.py -m gd
         '''
 def start_demo():
-    fig, axarr = plt.subplots(1, 2, figsize=(14,5))
+    
     X, Y = load_X_file('data\X.dat'), load_Y_file('data\Y.dat')
-    options, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "method="])
+    options, args = getopt.getopt(sys.argv[1:], "hm:", ["help", "method="])
     thetas = [0, 0, 0]
     for name,value in options:
         if name in ("-h","--help"):
