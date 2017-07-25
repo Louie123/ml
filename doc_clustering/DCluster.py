@@ -89,7 +89,6 @@ def build_samps(term_set, doc_terms_list, term_weight='BOOL'):
 
 def plot_with_labels(low_dim_embs, labels, title):
     assert low_dim_embs.shape[0] >= len(labels), "More labels than data"
-
     plt.title(title)
     plt.xlabel("X-Axis")
     plt.ylabel('Y-Axis')
