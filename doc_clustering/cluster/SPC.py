@@ -60,7 +60,7 @@ class OnePassCluster:
                 self.cluster_list.append(new_cluster)
 
     def print_result(self, label_dict=None):  
-        print "#################### Single-Pass Cluster ####################"
+        print "#################### Single-Pass Clustering ####################"
         res = np.array([-1] * len(self.vectors))
         for idx, cluster in enumerate(self.cluster_list):
             res[cluster.node_list] = np.array([idx]*cluster.node_num  )

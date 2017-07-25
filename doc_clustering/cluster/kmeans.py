@@ -1,11 +1,12 @@
 #coding=utf8
 import numpy as np
- 
+import copy
 def kMeans(dataset, k, centroids=None):
     '''
     centroids: centroids of clusters
     cluster_res: each row indicate the cluster num and distance to the centroid of the row index, respectively.
     '''
+    result = []
     m, iter_step = np.shape(dataset)[0], 1
     cluster_res = np.mat(np.zeros((m, 2))) 
     is_cluster_changed = True
@@ -27,4 +28,5 @@ def kMeans(dataset, k, centroids=None):
             pts_in_clust = dataset[np.nonzero(cluster_res[:,0].A == cent)[0]]
             centroids[cent,:] = np.mean(pts_in_clust, axis = 0)
         iter_step += 1
-    return cluster_res[:, 0], centroids
+        result.append(copy.deepcopy(cluster_res[:, 0]))
+    return result, centroids

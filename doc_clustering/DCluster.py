@@ -89,7 +89,7 @@ def build_samps(term_set, doc_terms_list, term_weight='BOOL'):
 
 def plot_with_labels(low_dim_embs, labels, title):
     assert low_dim_embs.shape[0] >= len(labels), "More labels than data"
-    plt.figure(figsize=(6, 5.2))  # in inches
+
     plt.title(title)
     plt.xlabel("X-Axis")
     plt.ylabel('Y-Axis')
@@ -97,7 +97,7 @@ def plot_with_labels(low_dim_embs, labels, title):
     plt.ylim((-170, 150))
     for i, label in enumerate(labels):
         x, y = low_dim_embs[i, :]
-        plt.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
+        plt.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='left', va='baseline')
 
 def start_demo(docs_vsm, mode='kmeans'):
     if mode == 'hierarchical':
@@ -115,22 +115,25 @@ def start_demo(docs_vsm, mode='kmeans'):
 
     elif mode == 'kmeans':
         print("############## K-means Algorithm ###############")
-        centroids = np.array([docs_vsm[1,:], docs_vsm[4,:], docs_vsm[9,:]])
-        labels = kMeans(docs_vsm, 3, centroids)[0]
         tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=500)
         low_dim_doc_embs = tsne.fit_transform(docs_vsm)
-        title = 'The Clustering Result of K-means Algorithm'
-        plot_with_labels(low_dim_doc_embs, map(int, range(10)), title)
-        plt.scatter(low_dim_doc_embs[:, 0], low_dim_doc_embs[:, 1], c=map(int, labels))
-        plt.savefig('K-means.png')
+        centroids = np.array([docs_vsm[1,:], docs_vsm[4,:], docs_vsm[6,:]])
+        result = kMeans(docs_vsm, 3, centroids)[0]
+        plt.figure(figsize=(6, 5.2))  # in inches
+        for idx, labels in enumerate(result):
+            title = 'The Clustering Result of K-means Algorithm (step-' + str(idx + 1) + ')'
+            plot_with_labels(low_dim_doc_embs, map(int, range(10)), title)
+            plt.scatter(low_dim_doc_embs[:, 0], low_dim_doc_embs[:, 1], c=map(int, labels))
+            plt.savefig('K-means_' + str(idx + 1) + '.png')
         plt.show()
 
     elif mode == "SPC":
         clustering = OnePassCluster(vector_list=docs_vsm, t=2.35)
         labels = clustering.print_result()
+        plt.figure(figsize=(6, 5.2))  # in inches
         tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=500)
         low_dim_doc_embs = tsne.fit_transform(docs_vsm)
-        title = 'The Result of Single Pass Cluster Algorithm'
+        title = 'The Result of Single Pass Clustering Algorithm'
         plot_with_labels(low_dim_doc_embs, map(int, range(10)), title)
         plt.scatter(low_dim_doc_embs[:, 0], low_dim_doc_embs[:, 1], c=map(int, labels))
         plt.savefig('spc.png')
