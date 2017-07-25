@@ -19,7 +19,7 @@ Email: leyiwang.cn@gmail.com
 
 Department: 
 
-​	School of Computer Science & Technology,
+​	School of Computer Science & Engineering,
 
 ​	Nanjing University of Science &Technology, China
 
