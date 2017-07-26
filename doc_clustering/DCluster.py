@@ -102,12 +102,13 @@ def start_demo(docs_vsm, mode='kmeans'):
     if mode == 'hierarchical':
         print ("############## Hierarchical Clustering Algorithm ###############")
         disMat = sch.distance.pdist(docs_vsm, 'cosine') 
-        Z=sch.linkage(disMat, method='weighted') #get linkage matrix single complete average weighted centroid
-        P=sch.dendrogram(Z)
+        print disMat.shape
+        Z=sch.linkage(disMat, method='weighted') #get linkage matrix
+        P=sch.dendrogram(Z, labels=range(1,11))
         cluster= sch.fcluster(Z, t=1, criterion='inconsistent', depth=2)#get the result of hierarchical clustering 
         print "Hierarchy clustering:\n",cluster
         plt.title('The Result of Hierarchical Clustering Algorithm')
-        plt.xlabel("Samples")
+        plt.xlabel("Document Number")
         plt.ylabel('Distance')
         plt.savefig('hierarchical.png')
         plt.show()
@@ -121,7 +122,7 @@ def start_demo(docs_vsm, mode='kmeans'):
         plt.figure(figsize=(6, 5.2))  # in inches
         for idx, labels in enumerate(result):
             title = 'The Clustering Result of K-means Algorithm (step-' + str(idx + 1) + ')'
-            plot_with_labels(low_dim_doc_embs, map(int, range(10)), title)
+            plot_with_labels(low_dim_doc_embs, map(int, range(1, 11)), title)
             plt.scatter(low_dim_doc_embs[:, 0], low_dim_doc_embs[:, 1], c=map(int, labels))
             plt.savefig('K-means_' + str(idx + 1) + '.png')
         plt.show()
@@ -133,7 +134,7 @@ def start_demo(docs_vsm, mode='kmeans'):
         tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=500)
         low_dim_doc_embs = tsne.fit_transform(docs_vsm)
         title = 'The Result of Single Pass Clustering Algorithm'
-        plot_with_labels(low_dim_doc_embs, map(int, range(10)), title)
+        plot_with_labels(low_dim_doc_embs, map(int, range(1, 11)), title)
         plt.scatter(low_dim_doc_embs[:, 0], low_dim_doc_embs[:, 1], c=map(int, labels))
         plt.savefig('spc.png')
         plt.show()
