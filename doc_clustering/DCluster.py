@@ -139,13 +139,17 @@ def start_demo(docs_vsm, mode='kmeans'):
         plt.savefig('spc.png')
         plt.show()
 
-def feature_selection_tf(temp_term_set, doc_terms_list, min_num=1):
-    term_set = set()
-    term_tf_dic = stat_tf_term(temp_term_set, doc_terms_list)
-    for item in temp_term_set:
-        if term_tf_dic[item] > min_num:
-            term_set.add(item)
-    return term_set
+def feature_selection_tf(term_set, doc_terms_list, min_num=2):
+    '''
+    feature selection by term frequence
+    
+    '''
+    term_set_fs = set()
+    term_tf_dic = stat_tf_term(term_set, doc_terms_list)
+    for item in term_set:
+        if term_tf_dic[item] >= min_num:
+            term_set_fs.add(item)
+    return term_set_fs
 
 if __name__ == '__main__':
     options, args = getopt.getopt(sys.argv[1:], "hc:m:w:", ["help", "corpus=", "model=", "weight="])
@@ -165,7 +169,7 @@ if __name__ == '__main__':
             model = value
         if name in ("-w","--weight"):
             weight = value
-    doc_terms_list, temp_term_set = load_file(corpus)
-    term_set = feature_selection_tf(temp_term_set, doc_terms_list)
-    docs_vsm = build_samps(term_set, doc_terms_list, weight)
+    doc_terms_list, term_set = load_file(corpus)
+    term_set_fs = feature_selection_tf(temp_term_set, doc_terms_list)
+    docs_vsm = build_samps(term_set_fs, doc_terms_list, weight)
     start_demo(docs_vsm, model)
